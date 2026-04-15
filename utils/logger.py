@@ -17,3 +17,7 @@ def setup_logger(name="iptv_engine", level=logging.INFO):
     logger.addHandler(handler)
 
     return logger
+
+
+# 👇 ده السطر المهم
+logger = setup_logger()
