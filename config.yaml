@@ -1,0 +1,68 @@
+# IPTV Aggregator Configuration
+
+sources:
+  - url: "https://iptv-org.github.io/iptv/index.m3u"
+    enabled: true
+  - url: "https://raw.githubusercontent.com/Free-TV/IPTV/master/playlist.m3u"
+    enabled: true
+  # Add more sources here
+
+fetch:
+  timeout: 30
+  retries: 3
+  retry_delay: 2  # seconds
+  parallel_requests: 10
+
+validation:
+  timeout: 5
+  parallel_checks: 50
+  check_method: "head"  # head or get
+  max_latency: 3.0      # seconds, streams slower than this are penalized
+
+scoring:
+  speed_weight: 0.4
+  resolution_weight: 0.3
+  stability_weight: 0.2
+  format_weight: 0.1
+  resolution_boost:
+    "4k": 30
+    "fhd": 20
+    "hd": 10
+    "sd": 0
+  format_boost:
+    "m3u8": 15
+    "ts": 5
+    "other": 0
+  penalty_slow: 10
+  penalty_unstable: 20
+
+ranking:
+  top_per_channel: 2        # Keep best N streams per channel name
+  min_score: 30             # Discard streams below this score
+
+categories:
+  arabic:
+    keywords: ["arabic", "ar", "al jazeera", "mbc", "rotana", "osn", "bein"]
+  sports:
+    keywords: ["sports", "espn", "nba", "nfl", "premier league", "uefa", "fifa", "bein sports"]
+  news:
+    keywords: ["news", "cnn", "bbc", "fox news", "al jazeera", "sky news", "msnbc"]
+  movies:
+    keywords: ["movie", "hbo", "cinema", "film", "netflix"]
+  kids:
+    keywords: ["kids", "cartoon", "disney", "nick", "children", "baby"]
+  international:
+    keywords: []  # fallback category
+
+output:
+  base_dir: "playlists"
+  files:
+    all: "all.m3u"
+    arabic: "arabic.m3u"
+    sports: "sports.m3u"
+    premium: "premium_like.m3u"
+  group_by_category: true
+
+fast_mode: false  # Skip validation when true
+use_cache: true   # Cache validation results
+cache_file: "stream_cache.json"
