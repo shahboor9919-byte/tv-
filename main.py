@@ -5,7 +5,11 @@ import argparse
 import time
 from pathlib import Path
 
-from utils.logger import logger
+from utils.logger import setup_logger  # ✅ استيراد الدالة بدلاً من المتغير
+
+# ✅ إنشاء كائن logger
+logger = setup_logger()
+
 from pipeline.fetcher import Fetcher
 from pipeline.parser import M3UParser
 from pipeline.deduplicator import Deduplicator
