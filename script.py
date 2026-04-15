@@ -9,51 +9,43 @@ PLAYLISTS = [
 OUTPUT_FILE = "clean_playlist.m3u"
 
 
-def download_playlist(url):
+def download(url):
     try:
-        response = requests.get(url, timeout=10)
-        return response.text
+        return requests.get(url, timeout=10).text
     except:
         return ""
 
 
-def is_working(url):
-    try:
-        r = requests.head(url, timeout=5)
-        return r.status_code == 200
-    except:
-        return False
-
-
-def process_playlist(data):
+def clean_and_filter(data):
     lines = data.split("\n")
-    clean = []
+    output = []
 
     for i in range(len(lines)):
         if lines[i].startswith("#EXTINF") and i+1 < len(lines):
+            name = lines[i].lower()
             stream = lines[i+1]
 
-            if stream.startswith("http"):
-                if is_working(stream):
-                    clean.append(lines[i])
-                    clean.append(stream)
+            # فلترة ذكية
+            if any(x in name for x in ["arab", "sport", "news", "movie"]):
+                if stream.startswith("http"):
+                    output.append(lines[i])
+                    output.append(stream)
 
-    return clean
+    return output
 
 
 def main():
-    final_playlist = ["#EXTM3U"]
+    final = ["#EXTM3U"]
 
     for url in PLAYLISTS:
-        print(f"Processing: {url}")
-        data = download_playlist(url)
-        cleaned = process_playlist(data)
-        final_playlist.extend(cleaned)
+        print("Processing:", url)
+        data = download(url)
+        final.extend(clean_and_filter(data))
 
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-        f.write("\n".join(final_playlist))
+        f.write("\n".join(final))
 
-    print("✅ Clean playlist saved as:", OUTPUT_FILE)
+    print("✅ DONE:", OUTPUT_FILE)
 
 
 if __name__ == "__main__":
