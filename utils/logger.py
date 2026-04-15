@@ -19,5 +19,4 @@ def setup_logger(name="iptv_engine", level=logging.INFO):
     return logger
 
 
-# 👇 ده السطر المهم
 logger = setup_logger()
