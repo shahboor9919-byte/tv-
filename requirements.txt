@@ -1,1 +1,5 @@
-requests
+aiohttp>=3.9.0
+asyncio>=3.4.3
+pyyaml>=6.0
+rapidfuzz>=3.5.0
+colorlog>=6.7.0
